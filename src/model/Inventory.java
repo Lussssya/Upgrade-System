@@ -64,7 +64,7 @@ public class Inventory {
     public void removeItem(Item item) throws IllegalArgumentException {
         int index = findItemIndex(item);
         if (index == -1) {
-            throw new IllegalArgumentException("model.Item is absent from inventory.");
+            throw new IllegalArgumentException("Item is absent from inventory.");
         }
         itemList.remove(index);
     }
@@ -95,9 +95,9 @@ public class Inventory {
 
     // display items in inventory
     public void display() {
-        System.out.println(Display.BOLD + Display.BLUE + "model.Inventory" + Display.RESET);
+        System.out.println(Display.BOLD + Display.BLUE + "Inventory" + Display.RESET);
         for (int i = 0; i < itemList.size(); i++) {
-            System.out.println(i + 1 + ": " + itemList.get(i));
+            System.out.println(Display.BLUE + (i + 1) + Display.RESET + ": " + itemList.get(i));
         }
     }
 
