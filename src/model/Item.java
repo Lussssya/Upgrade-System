@@ -1,37 +1,17 @@
+package model;
+
 import java.util.Objects;
 
 public class Item {
-    // A string representing the item's name
     private String name;
-    // Rarity of the item
+
+    public enum Rarity {
+        COMMON, GREAT, RARE, EPIC, LEGENDARY
+    }
+
     private Rarity rarity;
     // Upgrade counts. Changes only in the case of EPIC item.
     private int upgradeCount;
-
-    // enum to store the types for Rarity.
-    public enum Rarity {
-        COMMON,
-        GREAT,
-        RARE,
-        EPIC,
-        LEGENDARY
-    }
-
-    // A public method that returns the next rarity type of the item's current one.
-    public Rarity nextRarity() {
-        switch (getRarity()) {
-            case Rarity.COMMON:
-                return Rarity.GREAT;
-            case Rarity.GREAT:
-                return Rarity.RARE;
-            case Rarity.RARE:
-                return Rarity.EPIC;
-            case Rarity.EPIC:
-                return Rarity.LEGENDARY;
-            default:
-                return null;
-        }
-    }
 
     // constructor for items from common to epic.
     public Item(String name, Rarity rarity) {
@@ -84,28 +64,39 @@ public class Item {
         this.upgradeCount = upgradeCount;
     }
 
-    // An overriden equals method, that compares items comparing all instance variables.
+    public void incrementUpgradeCount() {
+        setUpgradeCount(getUpgradeCount() + 1);
+    }
+
+    public void upgradeRarity() {
+        setRarity(nextRarity());
+    }
+
+    public Rarity nextRarity() {
+        return switch (getRarity()) {
+            case Rarity.COMMON -> Rarity.GREAT;
+            case Rarity.GREAT -> Rarity.RARE;
+            case Rarity.RARE -> Rarity.EPIC;
+            case Rarity.EPIC -> Rarity.LEGENDARY;
+            default -> null;
+        };
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Item objItem = (Item) obj;
-        return this.getName().equals(objItem.getName())
-                && this.getRarity() == objItem.getRarity()
-                && this.getUpgradeCount() == objItem.getUpgradeCount();
+        return this.getName().equals(objItem.getName()) && this.getRarity() == objItem.getRarity() && this.getUpgradeCount() == objItem.getUpgradeCount();
     }
 
-    // An overriden hashCode method.
     @Override
     public int hashCode() {
         return Objects.hash(name, rarity, upgradeCount);
     }
 
-    // An overriden toString method.
     @Override
     public String toString() {
-        return "\u001B[33;1mName: \u001B[0m" + getName() +
-                " \u001B[33;1mRarity: \u001B[0m" + getRarity() +
-                " \u001B[33;1mUpgrade lvl: \u001B[0m" + getUpgradeCount();
+        return "\u001B[33;1mName: \u001B[0m" + getName() + " \u001B[33;1mRarity: \u001B[0m" + getRarity() + " \u001B[33;1mUpgrade lvl: \u001B[0m" + getUpgradeCount();
     }
 }
