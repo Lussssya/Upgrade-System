@@ -23,7 +23,7 @@ public class Game {
 
     // Opens a chest randomly, with chance of getting a better one less than the worse.
     private Chest openChest() {
-        int inventorySize = 0;
+        int inventorySize;
         Random random = new Random();
         int number = random.nextInt(100);
 
