@@ -75,9 +75,9 @@ public class Chest {
         for (int i = 0; i < itemCount; i++) {
             int index =  random.nextInt(itemList.size());
             Item chosen = itemList.get(index);
-            itemList.remove(index);
             System.out.println("You got: " + chosen);
             System.out.println(Display.getRarityMessage(chosen.getRarity()));
+            System.out.println();
             items.add(chosen);
         }
     }

@@ -5,6 +5,7 @@ import view.Display;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -16,11 +17,37 @@ public class Game {
 
     public Game() {
         greeting();
-        Chest chest = new Chest(20);
+        Chest chest = openChest();
         inventory = new Inventory(chest.getItems());
     }
 
-    // TODO: change the text
+    // Opens a chest randomly, with chance of getting a better one less than the worse.
+    private Chest openChest() {
+        int inventorySize = 0;
+        Random random = new Random();
+        int number = random.nextInt(100);
+
+        if (number < 50) {
+            inventorySize = 5;
+            System.out.println("Oh, you chose the smallest one? That must be... impressive?");
+            System.out.println(Display.BOLD + Display.RED + "Bronze Chest: " + Display.RESET);
+        } else if (number < 80) {
+            inventorySize = 10;
+            System.out.println("Not bad! You like silver? Or maybe silver gold, ha-ha?");
+            System.out.println(Display.BOLD + Display.RED + "Silver Chest: " + Display.RESET);
+        } else if (number < 95) {
+            inventorySize = 15;
+            System.out.println("Perfect! You can consider yourself a pirate! Arr.");
+            System.out.println(Display.BOLD + Display.RED + "Golden Chest: " + Display.RESET);
+        } else {
+            inventorySize = 25;
+            System.out.println("AAAAAA!! Is that even real?! Now no one will visit this place, since you're taking the best prize!");
+            System.out.println(Display.BOLD + Display.RED + "Legendary Chest: " + Display.RESET);
+        }
+        return new Chest(inventorySize);
+    }
+
+
     private void greeting() {
         System.out.println("Welcome to the mysterious cave the wind lead you! Hey, look at me! No, not there. And not there as well...");
         System.out.println("...");
@@ -28,13 +55,15 @@ public class Game {
         System.out.println("Stop looking at me like that. You're underestimating me, don't you?! Come on, look!");
         Display.displayActions();
         System.out.println("Ha! Thought I couldn't do even that? Now, enough talking, I'll prove you I'm the best! Go on, open a chest.");
-        System.out.println(Display.BLUE + "Dan dan dan... Opening a chest! " + Display.RESET);
-        System.out.println("Done! Now look at your inventory. I'll open it for you.");
-        System.out.println("Now... If you flatter me, I'll help you, he-he.");
+        System.out.println("Or... nah! You should prove that you deserve my power!");
+        System.out.println("If you flatter me, I'll help you, he-he.");
         System.out.print(Display.BLUE + "Type a compliment: " + Display.RESET);
         scanner.nextLine();
-        System.out.println("Oh, you really think so..? W-well... Okay, then you can pick whatever action you want!");
-        System.out.println(Display.BLUE + "Opening a chest..." + Display.RESET);
+        System.out.println("Oh, you really think so..? W-well...");
+        System.out.println("Your luck will decide what chest you're getting... d-dear.");
+        System.out.println(Display.BLUE + "Picking a chest! " + Display.RESET);
+        Display.progressBar();
+        System.out.println();
     }
 
     private List<Integer> validateInput(String numbers) {
@@ -50,7 +79,6 @@ public class Game {
             }
             indices.add(num);
         }
-
         return indices;
     }
 
@@ -123,7 +151,7 @@ public class Game {
                 case 2 -> Display.displayRules();
                 case 3 -> upgrade();
                 case 4 -> {
-                    System.out.println("Goodbye!");
+                    System.out.println("Bye! But I think I'll miss you...");
                     return false;
                 }
             }
@@ -146,8 +174,12 @@ public class Game {
     }
 
     public void start() {
-        System.out.println("So, here are your items: ");
-        inventory.display();
-        process();
+        if (inventory.getSize() == 0) {
+            System.out.println("Come back next time. I'll be waiting for you. Or no... Anyway, bye!");
+        } else {
+            System.out.println("So, here are your items: ");
+            inventory.display();
+            process();
+        }
     }
 }
