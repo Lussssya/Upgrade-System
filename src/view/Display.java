@@ -13,9 +13,9 @@ public class Display {
     public static void displayActions() {
         System.out.println(BOLD + BLUE + "Actions List" + RESET);
         System.out.println(
-                BLUE + "1: " + RESET + GREEN + "view.Display model.Inventory" + RESET + "\n" +
-                        BLUE + "2: " + RESET + GREEN + "view.Display Upgrading Rules" + RESET + "\n" +
-                        BLUE + "3: " + RESET + GREEN + "core.Upgrade" + RESET + "\n" +
+                BLUE + "1: " + RESET + GREEN + "Display Inventory" + RESET + "\n" +
+                        BLUE + "2: " + RESET + GREEN + "Display Upgrading Rules" + RESET + "\n" +
+                        BLUE + "3: " + RESET + GREEN + "Upgrade" + RESET + "\n" +
                         BLUE + "4: " + RESET + GREEN + "Exit" + RESET
         );
     }
