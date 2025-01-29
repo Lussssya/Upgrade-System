@@ -39,7 +39,10 @@ public class Inventory {
     }
 
     public void removeItem(Item item) {
-        inventory.get(item.getRarity()).remove(item);
+        List<Item> items = inventory.get(item.getRarity());
+        if (items == null || !items.remove(item)) {
+            throw new IllegalArgumentException("Item not found in inventory.");
+        }
     }
 
     public void display() {
