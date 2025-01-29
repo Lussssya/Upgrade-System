@@ -5,7 +5,6 @@ import view.Display;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -13,40 +12,18 @@ import java.util.Scanner;
  */
 public class Game {
     private static final Scanner scanner = new Scanner(System.in);
-    private final Inventory inventory;
+    private final Inventory inventory = new Inventory();
 
     public Game() {
         greeting();
-        Chest chest = openChest();
-        inventory = new Inventory(chest.getItems());
     }
 
-    // Opens a chest randomly, with chance of getting a better one less than the worse.
-    private Chest openChest() {
-        int inventorySize;
-        Random random = new Random();
-        int number = random.nextInt(100);
-
-        if (number < 50) {
-            inventorySize = 5;
-            System.out.println("Oh, you chose the smallest one? That must be... impressive?");
-            System.out.println(Display.BOLD + Display.RED + "Bronze Chest: " + Display.RESET);
-        } else if (number < 80) {
-            inventorySize = 10;
-            System.out.println("Not bad! You like silver? Or maybe silver gold, ha-ha?");
-            System.out.println(Display.BOLD + Display.RED + "Silver Chest: " + Display.RESET);
-        } else if (number < 95) {
-            inventorySize = 15;
-            System.out.println("Perfect! You can consider yourself a pirate! Arr.");
-            System.out.println(Display.BOLD + Display.RED + "Golden Chest: " + Display.RESET);
-        } else {
-            inventorySize = 25;
-            System.out.println("AAAAAA!! Is that even real?! Now no one will visit this place, since you're taking the best prize!");
-            System.out.println(Display.BOLD + Display.RED + "Legendary Chest: " + Display.RESET);
+    // Opens a random chest
+    private void openChest() {
+        for (Item item : Chest.openChest()) {
+            inventory.addItem(item);
         }
-        return new Chest(inventorySize);
     }
-
 
     private void greeting() {
         System.out.println("Welcome to the mysterious cave the wind lead you! Hey, look at me! No, not there. And not there as well...");
@@ -69,23 +46,34 @@ public class Game {
     private List<Integer> validateInput(String numbers) {
         String[] split = numbers.split(" ");
         List<Integer> indices = new ArrayList<>();
+
         for (String s : split) {
             if (!s.matches("\\d+")) {
                 throw new IllegalArgumentException("Input contains non-numeric values: " + s);
             }
             int num = Integer.parseInt(s) - 1;
+
             if (num < 0 || num >= inventory.getSize()) {
                 throw new IllegalArgumentException("Number out of range: " + num);
             }
+            if (indices.contains(num)) {
+                throw new IllegalArgumentException("Duplicate index: " + num);
+            }
             indices.add(num);
         }
+
         return indices;
     }
 
-    private void validateAction(int choice) {
-        if (choice < 1 || choice > 4) {
+    private int validateAction(String choice) {
+        if (choice.length() != 1) {
+            throw new IllegalArgumentException("You should type only the index of the action you want to perform!");
+        }
+        int index = Integer.parseInt(choice);
+        if (index < 1 || index > 5) {
             throw new IllegalArgumentException("Invalid action. Please enter a number between 1 and 4.");
         }
+        return index;
     }
 
     private List<Item> getItemsForUpgrade(String choices) {
@@ -93,21 +81,15 @@ public class Game {
         List<Item> items = new ArrayList<>();
         for (int index : indices) {
             items.add(inventory.getItemByIndex(index));
+            System.out.println("Adding " + inventory.getItemByIndex(index));
         }
         return items;
     }
 
-    private Item performUpgrade(List<Item> items) {
-        Upgrade upgrade = new Upgrade(items);
-        return upgrade.run();
-    }
-
-    private void finalizeUpgrade(List<Item> items, Item upgradedItem) {
-        for (Item item : items) {
-            inventory.removeItem(item);
-        }
-        int displayNumber = inventory.addItem(upgradedItem) + 1;
-        System.out.println("Upgrade successful! Upgraded item: " + upgradedItem + " under number " + displayNumber);
+    // may throw IllegalArgumentException
+    private void performUpgrade(List<Item> items) {
+        UpgradeManager upgradeManager = new UpgradeManager(items, inventory);
+        upgradeManager.upgrade();
     }
 
     private void handleUpgradeError(IllegalArgumentException e) {
@@ -123,8 +105,7 @@ public class Game {
             String choices = scanner.nextLine();
             try {
                 List<Item> items = getItemsForUpgrade(choices);
-                Item upgradedItem = performUpgrade(items);
-                finalizeUpgrade(items, upgradedItem);
+                performUpgrade(items);
                 flag = false;
             } catch (IllegalArgumentException e) {
                 handleUpgradeError(e);
@@ -141,16 +122,19 @@ public class Game {
      */
     private boolean handleAction() {
         try {
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+            String choice = scanner.nextLine();
 
-            validateAction(choice);
+            int index = validateAction(choice);
 
-            switch (choice) {
+            switch (index) {
                 case 1 -> inventory.display();
-                case 2 -> Display.displayRules();
-                case 3 -> upgrade();
-                case 4 -> {
+                case 2 -> {
+                    openChest();
+                    System.out.println("Inventory size is: " + inventory.getSize());
+                }
+                case 3 -> Display.displayRules();
+                case 4 -> upgrade();
+                case 5 -> {
                     System.out.println("Bye! But I think I'll miss you...");
                     return false;
                 }
@@ -174,12 +158,8 @@ public class Game {
     }
 
     public void start() {
-        if (inventory.getSize() == 0) {
-            System.out.println("Come back next time. I'll be waiting for you. Or no... Anyway, bye!");
-        } else {
-            System.out.println("So, here are your items: ");
-            inventory.display();
-            process();
-        }
+        System.out.println("So, here are your items: ");
+        inventory.display();
+        process();
     }
 }

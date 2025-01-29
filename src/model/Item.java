@@ -3,24 +3,19 @@ package model;
 import java.util.Objects;
 
 public class Item {
-    private String name;
-
-    public enum Rarity {
-        COMMON, GREAT, RARE, EPIC, LEGENDARY
-    }
-
+    private final String name;
     private Rarity rarity;
-    // Upgrade counts. Changes only in the case of EPIC item.
+    // upgrade counts. Changes only in the case of EPIC item.
     private int upgradeCount;
 
-    // constructor for items from common to epic.
+    // constructor for all items, except epic 1 and epic 2.
     public Item(String name, Rarity rarity) {
         this.name = name;
         this.rarity = rarity;
         this.upgradeCount = 0;
     }
 
-    // constructor for epic item.
+    // constructor for epic 1 and epic 2 items.
     public Item(String name, Rarity rarity, int upgradeCount) throws IllegalArgumentException {
         this(name, rarity);
         if (rarity != Rarity.EPIC) {
@@ -46,10 +41,6 @@ public class Item {
     }
 
     // setters
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public void setRarity(Rarity rarity) {
         this.rarity = rarity;
     }
@@ -73,13 +64,7 @@ public class Item {
     }
 
     public Rarity nextRarity() {
-        return switch (getRarity()) {
-            case Rarity.COMMON -> Rarity.GREAT;
-            case Rarity.GREAT -> Rarity.RARE;
-            case Rarity.RARE -> Rarity.EPIC;
-            case Rarity.EPIC -> Rarity.LEGENDARY;
-            default -> null;
-        };
+        return rarity.nextRarity();
     }
 
     @Override
@@ -92,7 +77,12 @@ public class Item {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, rarity, upgradeCount);
+        int prime = 31;
+        int result = 1;
+        result = prime * result + Objects.hash(name);
+        result = prime * result + (rarity != null ? rarity.hashCode() : 0);
+        result = prime * result + upgradeCount;
+        return result;
     }
 
     @Override

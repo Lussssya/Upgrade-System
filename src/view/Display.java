@@ -1,6 +1,7 @@
 package view;
 
 import model.Item;
+import model.Rarity;
 
 public class Display {
     // ANSI color codes
@@ -15,9 +16,10 @@ public class Display {
         System.out.println(BOLD + BLUE + "Actions List" + RESET);
         System.out.println(
                 BLUE + "1: " + RESET + GREEN + "Display Inventory" + RESET + "\n" +
-                        BLUE + "2: " + RESET + GREEN + "Display Upgrading Rules" + RESET + "\n" +
-                        BLUE + "3: " + RESET + GREEN + "Upgrade" + RESET + "\n" +
-                        BLUE + "4: " + RESET + GREEN + "Exit" + RESET
+                        BLUE + "2: " + RESET + GREEN + "Open a Chest" + RESET + "\n" +
+                        BLUE + "3: " + RESET + GREEN + "Display Upgrading Rules" + RESET + "\n" +
+                        BLUE + "4: " + RESET + GREEN + "Upgrade" + RESET + "\n" +
+                        BLUE + "5: " + RESET + GREEN + "Exit" + RESET
         );
     }
 
@@ -41,7 +43,7 @@ public class Display {
                 " items of the same type.\n" +
                 BLUE + "4. " + RESET +
                 "To upgrade an " + ORANGE + "Epic" + RESET +
-                " item to " + ORANGE + "Epic 1" + RESET + GREEN +
+                " item to " + ORANGE + "Epic 1" + RESET +
                 ", combine it with any other " + ORANGE + "Epic" + RESET +
                 " item.\n" +
                 BLUE + "5. " + RESET +
@@ -60,19 +62,6 @@ public class Display {
         );
     }
 
-    // A method for mimicking typing
-    public static void type(String s, int speed) {
-        try {
-            for (char c : s.toCharArray()) {
-                System.out.print(c);
-                Thread.sleep(speed);
-            }
-            System.out.println();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-    }
-
     public static void progressBar() {
         for (int i = 0; i < 50; i++) {
             System.out.print(GREEN + '█' + RESET);
@@ -83,15 +72,5 @@ public class Display {
             }
         }
         System.out.println();
-    }
-
-    public static String getRarityMessage(Item.Rarity rarity) {
-        return switch (rarity) {
-            case Item.Rarity.COMMON -> "But it's okay, don't cry!";
-            case Item.Rarity.GREAT -> "And, wow... not bad!";
-            case Item.Rarity.RARE -> "Yay, it is getting better and better!";
-            case Item.Rarity.EPIC -> "Great luck!!!";
-            case Item.Rarity.LEGENDARY -> "Are you even human?!";
-        };
     }
 }
