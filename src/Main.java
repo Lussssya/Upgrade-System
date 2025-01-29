@@ -1,3 +1,4 @@
+import core.Game;
 import model.*;
 import core.UpgradeManager;
 
@@ -5,14 +6,8 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Running Manual Tests...");
-
-        testInventoryManagement();
-        testItemUpgrades();
-        testInvalidUpgrades();
-        testChestMechanics();
-
-        System.out.println("All manual tests completed.");
+        Game game = new Game();
+        game.start();
     }
 
     private static void testInventoryManagement() {
